@@ -38,6 +38,12 @@ export function themeIcon(key) {
   return { file: th.icon, mono: !!th.iconMono };
 }
 
+// 当前身份的举牌吐槽役图片（没有则 null）
+export function themeMascot() {
+  const th = themes[identity];
+  return th && th.mascotImg ? `assets/mascots/${th.mascotImg}` : null;
+}
+
 // 供 canvas 卡片读取当前主题色
 export function themeColors() {
   return themes[identity] || themes.default;

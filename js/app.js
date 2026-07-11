@@ -2,7 +2,7 @@ import { initI18n, t, toggleLang, currentLang } from './i18n.js';
 import { countBaseTokens } from './tokenizer.js';
 import { loadData, apiBill, planUsage, humanRate, outputUsdPerMtok, vendorTopModel, fx, dataDate } from './pricing.js';
 import { drawCard } from './card.js';
-import { loadThemes, themeEntries, themeName, themeIcon, currentIdentity, identityVendor, setIdentity } from './theme.js';
+import { loadThemes, themeEntries, themeName, themeIcon, themeMascot, currentIdentity, identityVendor, setIdentity } from './theme.js';
 
 const $ = id => document.getElementById(id);
 let lastResult = null;
@@ -21,6 +21,7 @@ async function init() {
   $('lang-toggle').addEventListener('click', () => {
     toggleLang();
     renderChips();
+    updateTaunt();
     if (lastResult) render(lastResult);
   });
   $('calc-btn').addEventListener('click', calculate);
@@ -33,6 +34,13 @@ async function init() {
     if (e.key === 'Escape') closeCardModal();
   });
   $('card-save').addEventListener('click', saveCard);
+  $('taunt-box').addEventListener('click', () => {
+    const el = $('taunt-box');
+    el.classList.remove('wobble');
+    void el.offsetWidth;
+    el.classList.add('wobble');
+  });
+  updateTaunt();
 
   // Tabs
   $('tab-api').addEventListener('click', () => switchTab('api'));
@@ -73,9 +81,69 @@ function renderChips() {
     btn.addEventListener('click', () => {
       setIdentity(btn.dataset.key);
       renderChips();
+      updateTaunt();
       if (lastResult) render(lastResult);
     });
   });
+}
+
+// 举牌吐槽役：专属梗图（mascotImg）优先，否则用自绘 SVG 举牌娘；人类原味不出现
+function updateTaunt() {
+  const el = $('taunt-box');
+  const img = themeMascot();
+  const key = currentIdentity();
+  if (img) {
+    el.innerHTML = `<img class="taunt-img" src="${img}" alt="">`;
+  } else if (identityVendor()) {
+    el.innerHTML = tauntSvg(key) + `<div class="taunt-caption">${t('taunt_line', { name: themeName(key) })}</div>`;
+  } else {
+    el.classList.add('hidden');
+    el.innerHTML = '';
+    return;
+  }
+  el.classList.add('hidden');
+  void el.offsetWidth; // 重置入场动画
+  el.classList.remove('hidden');
+}
+
+// 自绘举牌娘：线稿颜色走 CSS 变量，牌面嵌当前厂商图标
+function tauntSvg(key) {
+  const ic = themeIcon(key);
+  const iconHref = ic ? `vendor/icons/${ic.file}` : '';
+  return `
+  <svg class="taunt-svg" viewBox="0 0 220 240" fill="none">
+    <g stroke="var(--text)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+      <!-- 身体 -->
+      <path d="M110 152 Q98 192 104 216 L176 216 Q182 192 172 152" fill="var(--panel)"/>
+      <!-- 水手领 -->
+      <path d="M124 154 L141 174 L158 154" fill="none"/>
+      <!-- 举牌手臂 -->
+      <path d="M112 164 C90 154 74 132 66 112" fill="none"/>
+      <!-- 另一只手臂 -->
+      <path d="M172 164 C187 158 194 168 191 180" fill="none"/>
+      <!-- 头 -->
+      <circle cx="141" cy="100" r="52" fill="var(--panel)"/>
+      <!-- 头发：顶弧 + 两侧发丝 + 刘海 -->
+      <path d="M89 96 A52 52 0 1 1 193 96" fill="none"/>
+      <path d="M89 96 C86 128 92 148 84 166" fill="none"/>
+      <path d="M193 96 C196 128 190 148 198 166" fill="none"/>
+      <path d="M116 58 L112 80 M136 52 L135 78 M158 56 L162 80" fill="none"/>
+      <!-- 牌子 -->
+      <g transform="rotate(-12 55 66)">
+        <rect x="8" y="20" width="96" height="88" rx="16" fill="var(--accent)"/>
+      </g>
+    </g>
+    <!-- 牌面图标（不描边） -->
+    <g transform="rotate(-12 55 66)">
+      <image href="${iconHref}" x="30" y="40" width="52" height="52"/>
+    </g>
+    <!-- 眼睛与嘴（填充，不描边） -->
+    <ellipse cx="123" cy="106" rx="8.5" ry="11" fill="var(--text)"/>
+    <ellipse cx="161" cy="106" rx="8.5" ry="11" fill="var(--text)"/>
+    <circle cx="126" cy="102" r="2.8" fill="var(--panel)"/>
+    <circle cx="164" cy="102" r="2.8" fill="var(--panel)"/>
+    <path d="M133 128 Q142 145 151 128 Q142 133 133 128" fill="var(--text)"/>
+  </svg>`;
 }
 
 // —— 文件读取 ——

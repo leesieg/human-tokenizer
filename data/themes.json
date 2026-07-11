@@ -29,7 +29,8 @@
     "line": "#e2ded2",
     "btnText": "#ffffff",
     "icon": "claude-color.svg",
-    "iconMono": false
+    "iconMono": false,
+    "mascotImg": "claude-taunt.png"
   },
   "openai": {
     "name_zh": "ChatGPT",
@@ -45,7 +46,8 @@
     "line": "#e5e5e8",
     "btnText": "#ffffff",
     "icon": "openai.svg",
-    "iconMono": true
+    "iconMono": true,
+    "mascotImg": "openai.jpg"
   },
   "xai": {
     "name_zh": "Grok",
@@ -61,7 +63,8 @@
     "line": "#2f3336",
     "btnText": "#000000",
     "icon": "grok.svg",
-    "iconMono": true
+    "iconMono": true,
+    "mascotImg": "xai.jpg"
   },
   "deepseek": {
     "name_zh": "DeepSeek",
@@ -77,7 +80,8 @@
     "line": "#e4e8f5",
     "btnText": "#ffffff",
     "icon": "deepseek-color.svg",
-    "iconMono": false
+    "iconMono": false,
+    "mascotImg": "deepseek.jpg"
   },
   "moonshot": {
     "name_zh": "Kimi",
@@ -93,7 +97,8 @@
     "line": "#2a2e38",
     "btnText": "#ffffff",
     "icon": "kimi-color.svg",
-    "iconMono": false
+    "iconMono": false,
+    "mascotImg": "moonshot.jpg"
   },
   "zhipu": {
     "name_zh": "GLM",
@@ -109,7 +114,8 @@
     "line": "#e6e9f2",
     "btnText": "#ffffff",
     "icon": "zhipu-color.svg",
-    "iconMono": false
+    "iconMono": false,
+    "mascotImg": "zhipu.jpg"
   },
   "minimax": {
     "name_zh": "MiniMax",
@@ -125,7 +131,8 @@
     "line": "#f2e4e8",
     "btnText": "#ffffff",
     "icon": "minimax-color.svg",
-    "iconMono": false
+    "iconMono": false,
+    "mascotImg": "minimax.jpg"
   },
   "xiaomi": {
     "name_zh": "MiMo",
@@ -141,7 +148,8 @@
     "line": "#f2e6d8",
     "btnText": "#ffffff",
     "icon": "mimo-fallback.svg",
-    "iconMono": false
+    "iconMono": false,
+    "mascotImg": "xiaomi.jpg"
   },
   "bytedance": {
     "name_zh": "豆包",
@@ -157,7 +165,8 @@
     "line": "#e3eaf7",
     "btnText": "#ffffff",
     "icon": "doubao-color.svg",
-    "iconMono": false
+    "iconMono": false,
+    "mascotImg": "bytedance.jpg"
   },
   "alibaba": {
     "name_zh": "千问",
@@ -173,7 +182,8 @@
     "line": "#e8e6f5",
     "btnText": "#ffffff",
     "icon": "qwen-color.svg",
-    "iconMono": false
+    "iconMono": false,
+    "mascotImg": "alibaba.jpg"
   },
   "tencent": {
     "name_zh": "混元",
@@ -189,6 +199,7 @@
     "line": "#e2eaf4",
     "btnText": "#ffffff",
     "icon": "hunyuan-color.svg",
-    "iconMono": false
+    "iconMono": false,
+    "mascotImg": "tencent.jpg"
   }
 }

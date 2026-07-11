@@ -45,7 +45,8 @@
     "footer_note": "所有价格数据均标注来源与日期，估算值已标明。本工具为讽刺作品：token 度量不了你的价值——但你老板可能也度量不了。页面配色仅为致敬，与各厂商无关。",
     "lang_toggle": "EN",
     "card_save_btn": "保存图片",
-    "step_bill_cap": "② 这活儿如果让 AI 干"
+    "step_bill_cap": "② 这活儿如果让 AI 干",
+    "taunt_line": "你还能有 {name} 聪明？"
   },
   "en": {
     "title": "Human Tokenizer",
@@ -93,6 +94,7 @@
     "footer_note": "All prices carry sources and dates; estimates are labeled. This is satire: tokens can't measure your worth — but then again, neither can your boss. Color themes are homage only, unaffiliated with any vendor.",
     "lang_toggle": "中文",
     "card_save_btn": "Save image",
-    "step_bill_cap": "② If an AI did this job"
+    "step_bill_cap": "② If an AI did this job",
+    "taunt_line": "Think you're smarter than {name}?"
   }
 }
