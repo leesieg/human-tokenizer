@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(claude-api)",
+      "Skill(claude-api:*)",
+      "WebSearch",
+      "WebFetch(domain:platform.minimax.io)",
+      "WebFetch(domain:platform.kimi.com)",
+      "WebFetch(domain:api-docs.deepseek.com)",
+      "WebFetch(domain:developers.openai.com)",
+      "WebFetch(domain:platform.xiaomimimo.com)",
+      "WebFetch(domain:help.aliyun.com)",
+      "WebFetch(domain:cloud.tencent.com)",
+      "WebFetch(domain:mimo.mi.com)",
+      "WebFetch(domain:www.volcengine.com)",
+      "WebFetch(domain:open.bigmodel.cn)",
+      "WebFetch(domain:docs.x.ai)",
+      "WebFetch(domain:docs.bigmodel.cn)",
+      "WebFetch(domain:docs.volcengine.com)",
+      "Bash(curl -sL -o vendor/gpt-tokenizer-o200k_base.js \"https://unpkg.com/gpt-tokenizer@3.4.0/dist/o200k_base.js\")",
+      "Bash(node -e ' *)",
+      "Bash(open \"http://localhost:8642\")",
+      "Bash(python3 -)",
+      "Bash(node --check js/app.js)"
+    ]
+  }
+}

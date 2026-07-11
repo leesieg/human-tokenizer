@@ -1,0 +1,1 @@
+Icons from @lobehub/icons-static-svg (https://github.com/lobehub/lobe-icons), MIT license for the set; vendor marks remain property of their owners, used nominatively. Vendored 2026-07-11.

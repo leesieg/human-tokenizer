@@ -1,0 +1,80 @@
+{
+  "updated": "2026-07-11",
+  "disclaimer": "订阅套餐额度官方均不公开，以下全部为社区估算，娱乐向数据，UI 展示时必须带标注",
+  "plans": [
+    {
+      "id": "claude-pro",
+      "vendor": "anthropic",
+      "name": "Claude Pro",
+      "price_usd_month": 20,
+      "quota": {
+        "type": "tokens_per_window",
+        "window_hours": 5,
+        "tokens_est": 400000,
+        "weekly_cap": true
+      },
+      "estimate": true,
+      "note": "社区共识约每 5 小时窗口 30-50 万输入 token，取中值 40 万；另有周上限。2026-05-06 官方曾将 5 小时额度翻倍",
+      "source": "https://tokenmix.ai/blog/complete-claude-limits-guide-2026-tokens-uploads-5-hour"
+    },
+    {
+      "id": "claude-max-5x",
+      "vendor": "anthropic",
+      "name": "Claude Max 5x",
+      "price_usd_month": 100,
+      "quota": {
+        "type": "tokens_per_window",
+        "window_hours": 5,
+        "tokens_est": 2000000,
+        "weekly_cap": true
+      },
+      "estimate": true,
+      "note": "按官方 5x Pro 倍率推算",
+      "source": "https://intuitionlabs.ai/articles/claude-max-plan-pricing-usage-limits"
+    },
+    {
+      "id": "claude-max-20x",
+      "vendor": "anthropic",
+      "name": "Claude Max 20x",
+      "price_usd_month": 200,
+      "quota": {
+        "type": "tokens_per_window",
+        "window_hours": 5,
+        "tokens_est": 8000000,
+        "weekly_cap": true
+      },
+      "estimate": true,
+      "note": "按官方 20x Pro 倍率推算",
+      "source": "https://intuitionlabs.ai/articles/claude-max-plan-pricing-usage-limits"
+    },
+    {
+      "id": "chatgpt-plus",
+      "vendor": "openai",
+      "name": "ChatGPT Plus",
+      "price_usd_month": 20,
+      "quota": {
+        "type": "messages_per_window",
+        "window_hours": 3,
+        "messages_est": 160,
+        "assumed_tokens_per_message": 700,
+        "extra": "另有每周 3000 条 Thinking 消息"
+      },
+      "estimate": true,
+      "note": "官方按条数限流（160 条/3 小时），换算 token 需假设单条平均 token 数，此处假设 700",
+      "source": "https://customgpt.ai/chatgpt-plus-limits-2026/"
+    },
+    {
+      "id": "chatgpt-pro",
+      "vendor": "openai",
+      "name": "ChatGPT Pro",
+      "price_usd_month": 200,
+      "quota": {
+        "type": "unlimited_soft",
+        "extra": "官方称近乎无限制，受滥用检测约束"
+      },
+      "estimate": true,
+      "note": "无公开额度，按'软无限'处理，UI 上展示为 ∞ 加注",
+      "source": "https://www.usecarly.com/blog/chatgpt-message-limit/"
+    }
+  ]
+}
