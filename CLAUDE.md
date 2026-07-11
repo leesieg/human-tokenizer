@@ -115,5 +115,7 @@ docs/               # 方案、调研等文档
 
 ## 部署
 
-- GitHub Pages，main 分支静态托管
-- git push 由我手动执行，不要自动 push
+- 仓库：git@github.com:leesieg/human-tokenizer.git（SSH 认证）
+- GitHub Pages 经 Actions 工作流部署（.github/workflows/pages.yml），push 到 main 即自动发布
+- 线上地址：https://leesieg.github.io/human-tokenizer/
+- git push 由我明确说了才执行，不要自动 push
