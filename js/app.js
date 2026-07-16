@@ -1,6 +1,6 @@
 import { initI18n, t, toggleLang, currentLang } from './i18n.js';
 import { countBaseTokens } from './tokenizer.js';
-import { loadData, apiBill, planUsage, humanRate, outputUsdPerMtok, vendorTopModel, fx, dataDate } from './pricing.js';
+import { loadData, apiBill, planUsage, humanRate, vendorTopModel, fx, dataDate } from './pricing.js';
 import { drawCard } from './card.js';
 import { loadThemes, themeEntries, themeName, themeIcon, themeMascot, currentIdentity, identityVendor, setIdentity } from './theme.js';
 
@@ -48,18 +48,19 @@ async function init() {
 
   // 文件上传
   $('upload-btn').addEventListener('click', () => $('file-input').click());
-  $('file-input').addEventListener('change', e => addFiles(e.target.files));
-  const ta = $('work-input');
-  ta.addEventListener('dragover', e => { e.preventDefault(); ta.classList.add('dragover'); });
-  ta.addEventListener('dragleave', () => ta.classList.remove('dragover'));
-  ta.addEventListener('drop', e => {
-    e.preventDefault();
-    ta.classList.remove('dragover');
-    addFiles(e.dataTransfer.files);
+  $('file-input').addEventListener('change', e => addFiles(e.target.files, $('work-input')));
+  [$('work-input'), $('feed-input')].forEach(ta => {
+    ta.addEventListener('dragover', e => { e.preventDefault(); ta.classList.add('dragover'); });
+    ta.addEventListener('dragleave', () => ta.classList.remove('dragover'));
+    ta.addEventListener('drop', e => {
+      e.preventDefault();
+      ta.classList.remove('dragover');
+      addFiles(e.dataTransfer.files, ta);
+    });
   });
 
   let timer;
-  ['work-input', 'salary-input', 'hours-input', 'salary-currency'].forEach(id => {
+  ['work-input', 'feed-input', 'salary-input', 'hours-input', 'salary-currency'].forEach(id => {
     $(id).addEventListener('input', () => {
       clearTimeout(timer);
       timer = setTimeout(() => { if (lastResult) calculate(); }, 400);
@@ -148,7 +149,7 @@ function tauntSvg(key) {
 
 // —— 文件读取 ——
 
-async function addFiles(fileList) {
+async function addFiles(fileList, ta) {
   const files = [...fileList];
   let added = 0, chars = 0;
   const skipped = [];
@@ -156,7 +157,6 @@ async function addFiles(fileList) {
     const isText = TEXT_EXT.test(f.name) || (f.type && f.type.startsWith('text/'));
     if (!isText || f.size > MAX_FILE_BYTES) { skipped.push(f.name); continue; }
     const content = await f.text();
-    const ta = $('work-input');
     ta.value += (ta.value ? '\n\n' : '') + `--- ${f.name} ---\n` + content;
     added++;
     chars += content.length;
@@ -190,15 +190,18 @@ function calculate() {
   $('empty-hint').classList.add('hidden');
 
   const baseTokens = countBaseTokens(text);
-  const bill = apiBill(baseTokens);
-  const usage = planUsage(baseTokens);
+  const feedText = $('feed-input').value;
+  const inTokens = feedText.trim() ? countBaseTokens(feedText) : 0;
+  const totalTokens = baseTokens + inTokens; // 人读写一体计费，套餐额度和人力单价都按总量算
+  const bill = apiBill(baseTokens, inTokens);
+  const usage = planUsage(totalTokens);
 
   const salary = parseFloat($('salary-input').value) || 0;
   const hours = parseFloat($('hours-input').value) || 0;
   const currency = $('salary-currency').value;
-  const human = salary > 0 ? humanRate(salary, currency, hours, baseTokens) : null;
+  const human = salary > 0 ? humanRate(salary, currency, hours, totalTokens) : null;
 
-  lastResult = { text, baseTokens, bill, usage, human, salary, hours, currency };
+  lastResult = { text, baseTokens, inTokens, bill, usage, human, salary, hours, currency };
   render(lastResult);
 }
 
@@ -212,6 +215,17 @@ function render(r) {
   mascot.classList.add('crunch');
   countUp($('token-count'), r.baseTokens, n => t('result_tokens', { n }));
   $('char-count').textContent = t('result_chars', { c: r.text.length.toLocaleString() });
+
+  // 吞吐比：只在投喂区有内容时出现
+  const tp = $('throughput-line');
+  tp.classList.toggle('hidden', !r.inTokens);
+  if (r.inTokens) {
+    tp.textContent = t('throughput_line', {
+      in: r.inTokens.toLocaleString(),
+      out: r.baseTokens.toLocaleString(),
+      pct: fmtPct(r.baseTokens / r.inTokens),
+    });
+  }
 
   renderBill(r);
   renderPlans(r);
@@ -231,6 +245,7 @@ function countUp(el, target, fmt) {
 }
 
 function renderBill(r) {
+  $('api-note').textContent = t(r.inTokens ? 'section_api_note_io' : 'section_api_note');
   const maxUsd = r.bill[r.bill.length - 1].usd || 1e-9;
   $('api-table').innerHTML = r.bill.map(row => `
     <div class="model-row">
@@ -268,7 +283,9 @@ function renderDuel(r) {
   // 对手：选了身份 → 该厂最贵模型；否则全场最贵
   const vendor = identityVendor();
   const opponent = (vendor && vendorTopModel(vendor)) || r.bill[r.bill.length - 1].model;
-  const modelRate = outputUsdPerMtok(opponent);
+  // 对手单价按本次工作量混合折算（有投喂时 = 输入输出加权价；无投喂时恰等于输出价）
+  const oppRow = r.bill.find(b => b.model.id === opponent.id);
+  const modelRate = oppRow.usd / (oppRow.outTokens + oppRow.inTokens) * 1e6;
   const ratio = r.human.usdPerMtok / modelRate;
   const punch = pickPunchline(ratio, opponent.name);
 
@@ -311,6 +328,11 @@ function share() {
     identityName: vendor ? themeName(currentIdentity()) : null,
     cheapest: { name: cheapest.model.name, cost: fmtMoney(cheapest.usd) },
     priciest: { name: priciest.model.name, cost: fmtMoney(priciest.usd) },
+    throughput: r.inTokens ? {
+      in: r.inTokens.toLocaleString(),
+      out: r.baseTokens.toLocaleString(),
+      pct: fmtPct(r.baseTokens / r.inTokens),
+    } : null,
     ratio: r.duel ? { model: r.duel.opponent, x: fmtRatio(r.duel.ratio) } : null,
     punchline: r.duel ? r.duel.punch : null,
   });

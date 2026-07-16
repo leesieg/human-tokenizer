@@ -31,6 +31,11 @@
         <span class="sub-note" data-i18n="upload_hint"></span>
       </div>
       <p id="upload-status" class="sub-note"></p>
+      <details id="feed-details" class="feed-details">
+        <summary data-i18n="feed_toggle"></summary>
+        <textarea id="feed-input" rows="5" data-i18n-ph="feed_placeholder"></textarea>
+        <p class="sub-note" data-i18n="feed_note"></p>
+      </details>
       <button id="calc-btn" class="primary-btn" data-i18n="calc_btn"></button>
     </section>
 
@@ -41,6 +46,7 @@
         <div id="mascot" class="mascot" aria-hidden="true">🤖</div>
         <div id="token-count" class="big-number"></div>
         <div id="char-count" class="sub-note"></div>
+        <div id="throughput-line" class="throughput-line hidden"></div>
       </div>
 
       <!-- ② 账单 -->
@@ -50,7 +56,7 @@
         <button id="tab-plans" class="tab" data-i18n="tab_plans"></button>
       </div>
       <div id="panel-api" class="result-block">
-        <p class="sub-note" data-i18n="section_api_note"></p>
+        <p class="sub-note" id="api-note" data-i18n="section_api_note"></p>
         <div id="api-table"></div>
       </div>
       <div id="panel-plans" class="result-block hidden">

@@ -48,22 +48,29 @@ export function drawCard(canvas, data) {
   ctx.fillStyle = th.text;
   ctx.fillText(t('card_priciest', { model: data.priciest.name, cost: data.priciest.cost }), 80, 795);
 
+  // 底部流式排版：吞吐比 / 倍率 / 吐槽依次下移，各块可换行
+  let y = 900;
+  if (data.throughput) {
+    ctx.fillStyle = th.accent2;
+    ctx.font = font(600, 44);
+    y = wrapText(ctx, t('card_throughput', data.throughput), 80, y, W - 160, 56) + 84;
+  }
   if (data.ratio) {
     ctx.fillStyle = th.accent;
     ctx.font = font(800, 60);
-    wrapText(ctx, t('card_ratio', { model: data.ratio.model, x: data.ratio.x }), 80, 930, W - 160, 76);
+    y = wrapText(ctx, t('card_ratio', { model: data.ratio.model, x: data.ratio.x }), 80, y, W - 160, 76) + 90;
   }
-
   if (data.punchline) {
     ctx.fillStyle = th.text;
     ctx.font = font(500, 44);
-    wrapText(ctx, data.punchline, 80, data.ratio ? 1090 : 950, W - 160, 62);
+    wrapText(ctx, data.punchline, 80, y, W - 160, 62);
   }
 
   ctx.fillStyle = th.muted;
   ctx.font = font(500, 36);
   ctx.fillText(t('card_footer'), 80, H - 80);
 
+  // 返回最后一行的基线 y，供流式排版接续
   function wrapText(c, text, x, y, maxW, lineH) {
     const units = zh ? [...text] : text.split(' ');
     const joiner = zh ? '' : ' ';
@@ -79,5 +86,6 @@ export function drawCard(canvas, data) {
       }
     }
     if (line) c.fillText(line, x, y);
+    return y;
   }
 }

@@ -86,6 +86,20 @@ textarea.dragover { border-color: var(--accent); border-style: dashed; }
 
 .upload-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
 
+/* 投喂区（input 计价）：默认折叠，不打扰主流程 */
+.feed-details { margin-top: 12px; }
+.feed-details summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 0.9rem;
+  user-select: none;
+  list-style: none;
+}
+.feed-details summary::-webkit-details-marker { display: none; }
+.feed-details summary:hover { color: var(--accent); }
+.feed-details[open] summary { color: var(--accent); margin-bottom: 8px; }
+.feed-details .sub-note { margin-top: 6px; }
+
 .opts-row { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
 .opt { flex: 1; min-width: 200px; }
 .salary-row { display: flex; gap: 8px; }
@@ -115,6 +129,13 @@ textarea.dragover { border-color: var(--accent); border-style: dashed; }
   font-variant-numeric: tabular-nums;
 }
 .sub-note { color: var(--muted); font-size: 0.85rem; }
+.throughput-line {
+  margin-top: 8px;
+  color: var(--accent2);
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
 
 /* 吉祥物 */
 .mascot {

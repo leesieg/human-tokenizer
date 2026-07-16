@@ -20,13 +20,21 @@ export function outputUsdPerMtok(m) {
   return m.output_cny_per_mtok / pricing.fx_usd_cny;
 }
 
-// 这份产出在各模型下的账单（按输出 token 计价），从便宜到贵
-export function apiBill(baseTokens) {
+export function inputUsdPerMtok(m) {
+  if (m.input_usd_per_mtok != null) return m.input_usd_per_mtok;
+  return m.input_cny_per_mtok / pricing.fx_usd_cny;
+}
+
+// 这份工作在各模型下的账单：产出按输出价、投喂按输入价，合计从便宜到贵
+export function apiBill(outBaseTokens, inBaseTokens = 0) {
   return pricing.models
     .map(m => {
-      const toks = modelTokens(baseTokens, m.token_ratio);
-      const usd = toks / 1e6 * outputUsdPerMtok(m);
-      return { model: m, tokens: toks, usd, cny: usd * pricing.fx_usd_cny };
+      const outToks = modelTokens(outBaseTokens, m.token_ratio);
+      const inToks = inBaseTokens ? modelTokens(inBaseTokens, m.token_ratio) : 0;
+      const outUsd = outToks / 1e6 * outputUsdPerMtok(m);
+      const inUsd = inToks / 1e6 * inputUsdPerMtok(m);
+      const usd = outUsd + inUsd;
+      return { model: m, outTokens: outToks, inTokens: inToks, outUsd, inUsd, usd, cny: usd * pricing.fx_usd_cny };
     })
     .sort((a, b) => a.usd - b.usd);
 }
@@ -46,7 +54,7 @@ export function planUsage(baseTokens) {
   });
 }
 
-// 人的单价：月薪 → USD/1M tok（按此次产出的 token 与耗时折算）
+// 人的单价：月薪 → USD/1M tok（baseTokens 传产出+投喂总量——人读写一体计费，没有输入折扣）
 // 月工作时长按 21.75 天 × 8 小时
 export function humanRate(salary, currency, hours, baseTokens) {
   const salaryUsd = currency === 'USD' ? salary : salary / pricing.fx_usd_cny;
