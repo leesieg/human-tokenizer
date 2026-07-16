@@ -4,7 +4,7 @@ let themes = {};
 let identity = localStorage.getItem('ht_identity') || 'default';
 
 export async function loadThemes() {
-  themes = await (await fetch('data/themes.json')).json();
+  themes = await (await fetch('data/themes.json', { cache: 'no-cache' })).json();
   if (!themes[identity]) identity = 'default';
   applyTheme();
 }

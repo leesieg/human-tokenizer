@@ -4,9 +4,10 @@ let pricing = null;
 let plans = null;
 
 export async function loadData() {
+  // no-cache：强制 ETag 重验证，避免部署后 HTML 新、JSON 旧的混版本（GH Pages max-age=600）
   [pricing, plans] = await Promise.all([
-    fetch('data/pricing.json').then(r => r.json()),
-    fetch('data/plans.json').then(r => r.json()),
+    fetch('data/pricing.json', { cache: 'no-cache' }).then(r => r.json()),
+    fetch('data/plans.json', { cache: 'no-cache' }).then(r => r.json()),
   ]);
   return { pricing, plans };
 }

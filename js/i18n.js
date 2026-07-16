@@ -3,7 +3,7 @@ let lang = localStorage.getItem('ht_lang')
   || (navigator.language && navigator.language.startsWith('zh') ? 'zh' : 'en');
 
 export async function initI18n() {
-  dict = await (await fetch('data/i18n.json')).json();
+  dict = await (await fetch('data/i18n.json', { cache: 'no-cache' })).json();
   applyLang();
 }
 
